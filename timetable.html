@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Smart Notes - Time Table</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{--bg:#2b170a;--text:gold;}
+.light{--bg:#e0f7fa;--text:#000000;}
+body{margin:0;font-family:Arial;background:var(--bg);color:var(--text);}
+header{display:flex;justify-content:space-between;padding:10px;box-shadow:0 0 10px gold;}
+button,input{
+  border:1px solid gold;
+  background:transparent;
+  color:var(--text);
+  padding:6px;
+  border-radius:6px;
+}
+.card{
+  margin:10px;
+  padding:10px;
+  background:#3b210f;
+  border-radius:10px;
+  box-shadow:0 0 10px rgba(255,215,0,0.4);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>⏰ Smart Notes - Time Table</h2>
+<div>
+<button onclick="toggleTheme()">🌙/☀️</button>
+<button onclick="location.href='view-timetable.html'">📂 View Timetable</button>
+<button onclick="location.href='index.html'">🏠 Home</button>
+</div>
+</header>
+
+<div class="card">
+<h3>Add Work</h3>
+<input type="time" id="timeInput"><br><br>
+<input type="text" id="taskInput" placeholder="Enter task"><br><br>
+<button onclick="addTask()">Add</button>
+</div>
+
+<script>
+function toggleTheme(){
+  document.body.classList.toggle("light");
+}
+
+let timetable = JSON.parse(localStorage.getItem("smart_timetable")) || [];
+
+function addTask(){
+  let time = document.getElementById("timeInput").value;
+  let task = document.getElementById("taskInput").value;
+  if(time=="" || task=="") return alert("Enter time and task");
+
+  timetable.push({time, task});
+  localStorage.setItem("smart_timetable", JSON.stringify(timetable));
+  alert("Task added");
+  timeInput.value="";
+  taskInput.value="";
+}
+</script>
+
+</body>
+</html>
