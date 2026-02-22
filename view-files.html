@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Smart Notes - View Files</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{background:#120a05;color:gold;font-family:Arial;margin:0;}
+header{text-align:center;padding:10px;box-shadow:0 0 10px gold;}
+.card{
+  background:#2b170a;
+  margin:10px;
+  padding:10px;
+  border-radius:10px;
+  box-shadow:0 0 10px gold;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  cursor:pointer;
+}
+button{
+  border:1px solid gold;
+  background:transparent;
+  color:gold;
+  padding:6px;
+  border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>📂 Saved Files</h2>
+<button onclick="goBack()">⬅ Back</button>
+</header>
+
+<div id="list"></div>
+
+<script>
+let files = JSON.parse(localStorage.getItem("smart_files")) || [];
+let listDiv = document.getElementById("list");
+
+function showFiles(){
+  listDiv.innerHTML="";
+  files.forEach((f,i)=>{
+    let div=document.createElement("div");
+    div.className="card";
+    div.innerHTML=`
+      <span>${f.name}</span>
+      <button onclick="deleteFile(${i}, event)">🗑</button>
+    `;
+    div.onclick=()=>openFile(i);
+    listDiv.appendChild(div);
+  });
+}
+
+function openFile(i){
+  let f = files[i];
+  let a = document.createElement("a");
+  a.href = f.data;
+  a.download = f.name;
+  a.click();
+}
+
+function deleteFile(i,e){
+  e.stopPropagation();
+  if(!confirm("Delete this file?")) return;
+  files.splice(i,1);
+  localStorage.setItem("smart_files", JSON.stringify(files));
+  showFiles();
+}
+
+function goBack(){
+  location.href="files.html";
+}
+
+showFiles();
+</script>
+
+</body>
+</html>
