@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Smart Notes - View Timetable</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{background:#120a05;color:gold;font-family:Arial;margin:0;}
+header{text-align:center;padding:10px;box-shadow:0 0 10px gold;}
+.card{
+  background:#2b170a;
+  margin:10px;
+  padding:10px;
+  border-radius:10px;
+  box-shadow:0 0 10px gold;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+button{
+  border:1px solid gold;
+  background:transparent;
+  color:gold;
+  padding:6px;
+  border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>📅 Time Table</h2>
+<button onclick="goBack()">⬅ Back</button>
+</header>
+
+<div id="list"></div>
+
+<script>
+let timetable = JSON.parse(localStorage.getItem("smart_timetable")) || [];
+let listDiv = document.getElementById("list");
+
+function showTable(){
+  listDiv.innerHTML="";
+  timetable.forEach((t,i)=>{
+    let div=document.createElement("div");
+    div.className="card";
+    div.innerHTML=`
+      <span>${t.time} - ${t.task}</span>
+      <button onclick="deleteTask(${i})">🗑</button>
+    `;
+    listDiv.appendChild(div);
+  });
+}
+
+function deleteTask(i){
+  if(!confirm("Delete this task?")) return;
+  timetable.splice(i,1);
+  localStorage.setItem("smart_timetable", JSON.stringify(timetable));
+  showTable();
+}
+
+function goBack(){
+  location.href="timetable.html";
+}
+
+showTable();
+</script>
+
+</body>
+</html>
