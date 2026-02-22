@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Smart Notes - Documents</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+<style>
+:root{--bg:#2b170a;--text:gold;}
+.light{--bg:#f5e6c8;--text:#3b210f;}
+body{margin:0;font-family:Arial;background:var(--bg);color:var(--text);}
+header{display:flex;justify-content:space-between;padding:10px;box-shadow:0 0 10px gold;}
+button,input{
+  border:1px solid gold;
+  background:transparent;
+  color:var(--text);
+  padding:6px;
+  border-radius:6px;
+}
+#editor{
+  height:300px;
+  background:white;
+  color:black;
+}
+.container{padding:10px;}
+#toolbar{
+  background:#fff;
+  border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>📝 Smart Notes</h2>
+<div>
+<button onclick="toggleTheme()">🌙/☀️</button>
+<button onclick="location.href='view-notes.html'">📂 View Docs</button>
+<button onclick="location.href='index.html'">🏠 Home</button>
+</div>
+</header>
+
+<div class="container">
+<input id="title" placeholder="Document title"><br><br>
+
+<!-- TOOLBAR -->
+<div id="toolbar">
+  <select class="ql-header">
+    <option selected></option>
+    <option value="1"></option>
+    <option value="2"></option>
+    <option value="3"></option>
+  </select>
+
+  <select class="ql-font"></select>
+  <select class="ql-size"></select>
+
+  <button class="ql-bold"></button>
+  <button class="ql-italic"></button>
+  <button class="ql-underline"></button>
+  <button class="ql-strike"></button>
+
+  <select class="ql-color"></select>
+  <select class="ql-background"></select>
+
+  <button class="ql-script" value="sub"></button>
+  <button class="ql-script" value="super"></button>
+
+  <button class="ql-blockquote"></button>
+  <button class="ql-code-block"></button>
+
+  <button class="ql-list" value="ordered"></button>
+  <button class="ql-list" value="bullet"></button>
+  <button class="ql-indent" value="-1"></button>
+  <button class="ql-indent" value="+1"></button>
+
+  <select class="ql-align"></select>
+
+  <button class="ql-link"></button>
+  <button class="ql-image"></button>
+  <button class="ql-formula"></button>
+
+  <button class="ql-clean"></button>
+</div>
+
+<div id="editor"></div>
+<br>
+
+<label>
+  <input type="checkbox" id="lockCheck"> Lock this document
+</label><br><br>
+
+<button onclick="saveDoc()">💾 Save Document</button>
+</div>
+
+<script>
+let quill = new Quill('#editor', {
+  theme: 'snow',
+  modules: {
+    toolbar: '#toolbar'
+  }
+});
+
+function toggleTheme(){
+  document.body.classList.toggle("light");
+}
+
+let docs = JSON.parse(localStorage.getItem("smart_docs")) || [];
+
+function saveDoc(){
+ let t = title.value;
+ let c = quill.root.innerHTML;
+ let locked = document.getElementById("lockCheck").checked;
+
+ if(t=="" || c=="<p><br></p>") return alert("Write something!");
+
+ let pass = "";
+ if(locked){
+   pass = prompt("Set password for this document:");
+   if(!pass) return alert("Password required for locked doc");
+ }
+
+ docs.push({title:t, content:c, locked:locked, password:pass});
+ localStorage.setItem("smart_docs", JSON.stringify(docs));
+
+ alert("Document saved");
+ title.value="";
+ quill.setText("");
+ lockCheck.checked=false;
+}
+</script>
+
+</body>
+</html>
