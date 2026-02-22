@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Smart Notes - View Habits</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{background:#120a05;color:gold;font-family:Arial;margin:0;}
+header{text-align:center;padding:10px;box-shadow:0 0 10px gold;}
+.card{
+  background:#2b170a;
+  margin:10px;
+  padding:10px;
+  border-radius:10px;
+  box-shadow:0 0 10px gold;
+}
+button{
+  border:1px solid gold;
+  background:transparent;
+  color:gold;
+  padding:6px;
+  border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>📅 Your Habits</h2>
+<button onclick="goBack()">⬅ Back</button>
+</header>
+
+<div id="list"></div>
+
+<script>
+let habits = JSON.parse(localStorage.getItem("smart_habits")) || [];
+let list=document.getElementById("list");
+
+habits.forEach((h,i)=>{
+  let div=document.createElement("div");
+  div.className="card";
+  let history="";
+  for(let d in h.record){
+    history+=`${d} : ${h.record[d]}<br>`;
+  }
+  div.innerHTML=`
+    <b>${h.name}</b><br>
+    ${history || "No records yet"}<br><br>
+    <button onclick="deleteHabit(${i})">🗑 Delete</button>
+  `;
+  list.appendChild(div);
+});
+
+function deleteHabit(i){
+  if(!confirm("Delete habit?")) return;
+  habits.splice(i,1);
+  localStorage.setItem("smart_habits",JSON.stringify(habits));
+  location.reload();
+}
+
+function goBack(){
+  location.href="habit.html";
+}
+</script>
+
+</body>
+</html>
