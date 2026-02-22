@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Smart Notes - View Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{background:#120a05;color:gold;font-family:Arial;margin:0;}
+header{text-align:center;padding:10px;box-shadow:0 0 10px gold;}
+.card{background:#2b170a;margin:10px;padding:10px;border-radius:10px;
+box-shadow:0 0 10px gold;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+button{border:1px solid gold;background:transparent;color:gold;padding:6px;border-radius:6px;}
+.hidden{display:none;}
+#viewer{padding:10px;}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>📂 Saved Documents</h2>
+<button onclick="goBack()">⬅ Back</button>
+</header>
+
+<div id="list"></div>
+<div id="viewer" class="hidden"></div>
+
+<script>
+let docs = JSON.parse(localStorage.getItem("smart_docs")) || [];
+let listDiv = document.getElementById("list");
+let viewerDiv = document.getElementById("viewer");
+
+function showList(){
+ listDiv.innerHTML="";
+ viewerDiv.classList.add("hidden");
+ listDiv.classList.remove("hidden");
+
+ docs.forEach((d,i)=>{
+   let div=document.createElement("div");
+   div.className="card";
+   div.innerHTML=`<span>${d.title}${d.locked?" 🔒":""}</span>
+                  <button onclick="deleteDoc(${i}, event)">🗑</button>`;
+   div.onclick=()=>openDoc(i);
+   listDiv.appendChild(div);
+ });
+}
+
+function openDoc(i){
+ let d=docs[i];
+
+ if(d.locked){
+   let p=prompt("Enter password:");
+   if(p!==d.password) return alert("Wrong password!");
+ }
+
+ listDiv.classList.add("hidden");
+ viewerDiv.classList.remove("hidden");
+
+ viewerDiv.innerHTML=`
+   <h3>${d.title}</h3>
+   <div>${d.content}</div>
+ `;
+}
+
+function deleteDoc(i,e){
+ e.stopPropagation();
+ if(!confirm("Delete this document?")) return;
+ docs.splice(i,1);
+ localStorage.setItem("smart_docs",JSON.stringify(docs));
+ showList();
+}
+
+function goBack(){
+ if(!viewerDiv.classList.contains("hidden")){
+   showList();
+ }else{
+   location.href="notes.html";
+ }
+}
+
+showList();
+</script>
+
+</body>
+</html>
