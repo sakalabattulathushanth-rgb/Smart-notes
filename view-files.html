@@ -56,12 +56,21 @@ function showFiles(){
   });
 }
 
-function openFile(i){
-  let f = files[i];
-  let a = document.createElement("a");
-  a.href = f.data;
-  a.download = f.name;
-  a.click();
+function openFile(id){
+  let tx = db.transaction("files","readonly");
+  let store = tx.objectStore("files");
+  let req = store.get(id);
+
+  req.onsuccess = function(){
+    let f = req.result;
+
+    // open file in new tab (view mode)
+    let win = window.open();
+    win.document.write(`
+      <title>${f.name}</title>
+      <iframe src="${f.data}" style="width:100%;height:100%;border:none;"></iframe>
+    `);
+  };
 }
 
 function deleteFile(i,e){
